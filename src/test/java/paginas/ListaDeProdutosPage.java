@@ -16,5 +16,7 @@ public class ListaDeProdutosPage {
 
         return new CadastrarProdutosPage(navegador);
     }
-
+    public String CapturarMensagemApresentada(){
+        return navegador.findElement(By.cssSelector(".toast.rounded")).getText();
+    }
 }

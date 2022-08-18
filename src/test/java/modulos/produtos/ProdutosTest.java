@@ -35,24 +35,23 @@ public class ProdutosTest {
 
         // Fazer Login
 
-        new LoginPage(navegador)
+      String mensagemToast =  new LoginPage(navegador)
         .informarOUsuario("admin")
             .informarASenha("admin")
                 .submeterFormularioDeLogin()
-                        .BotaoNovoProduto();
+                        .BotaoNovoProduto()
+                                .InformarNomeDoProduto("Play Station 5")
+                                        .InformarValorDoProduto("000")
+                                            .InformarCorProduto("Preto,Branco")
+                                                .SubmeterFormularioComErro()
+                                                        .CapturarMensagemApresentada();
 
-        // Vou preencher dados do produto eo valor sera igual a 0
 
-        navegador.findElement(By.id("produtonome")).sendKeys("PlayStation 5");
-        navegador.findElement(By.id("produtovalor")).sendKeys("000");
-        // Vou submter o formulario
-        navegador.findElement(By.cssSelector("button[name='action']")).click();
 
-        // Definir um tempo de espera para apresenta a mensagem
+
         navegador.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-        // e validar que a mensagem de erro foi apresentada
-       String mensagem = navegador.findElement(By.cssSelector(".toast.rounded")).getText();
-        Assertions.assertEquals("O valor do produto deve estar entre R$ 0,01 e R$ 7.000,00", mensagem);
+
+        Assertions.assertEquals("O valor do produto deve estar entre R$ 0,01 e R$ 7.000,00", mensagemToast);
 
 
         }
@@ -60,21 +59,39 @@ public class ProdutosTest {
         @Test
         @DisplayName("Não é permitido registrar um produto com valor igual a 7001")
         public void TestNaoEPermitodRegistraProdutoComValorIgualASeteMilEUm(){
-            navegador.findElement(By.id("usuario")).sendKeys("admin");
-            navegador.findElement(By.id("senha")).sendKeys("admin");
 
-            navegador.findElement(By.name("action")).click();
+        String mensagemToast = new LoginPage(navegador).
+                informarOUsuario("****").
+                informarASenha("****").
+                submeterFormularioDeLogin().
+                BotaoNovoProduto().
+                InformarNomeDoProduto("Play Station 5").
+                InformarValorDoProduto("700100").
+                InformarCorProduto("Preto, Branco").
+                SubmeterFormularioComErro().
+                CapturarMensagemApresentada();
 
-            navegador.findElement(By.id("produtonome")).sendKeys("PlayStation 5");
-            navegador.findElement(By.id("produtovalor")).sendKeys("700000");
-            // Vou submter o formulario
-            navegador.findElement(By.cssSelector("button[name='action']")).click();
+                navegador.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
-            // Definir um tempo de espera para apresenta a mensagem
-            navegador.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
-            // e validar que a mensagem de erro foi apresentada
-            String mensagem = navegador.findElement(By.cssSelector(".toast.rounded")).getText();
-            Assertions.assertEquals("O valor do produto deve estar entre R$ 0,01 e R$ 7.000,00", mensagem);
+            Assertions.assertEquals("O valor do produto deve estar entre R$ 0,01 e R$ 7.000,00", mensagemToast);
+
+        }
+        @Test
+        @DisplayName("Posso adicionar produtos que estejam na faixa de valor entre R$ 0,01 E R$ 7.000,00")
+        public void TestPossoAdicionarProdutosComValorDeUmCentavoAteSeteMil(){
+
+         String mensagemToast = new LoginPage(navegador).
+                 informarOUsuario("admin").
+                 informarASenha("admin").
+                 submeterFormularioDeLogin().
+                 BotaoNovoProduto().
+                 InformarNomeDoProduto("Macbook Pro").
+                 InformarValorDoProduto("500000").
+                 InformarCorProduto("Azul,Preto").
+                 SubmeterFormularioValido().
+                 CapturarMensagemValida();
+
+         Assertions.assertEquals("Produto adicionado com sucesso",mensagemToast);
 
         }
 
